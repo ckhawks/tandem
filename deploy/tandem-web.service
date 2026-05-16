@@ -1,0 +1,16 @@
+[Unit]
+Description=Tandem — Next.js app
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=tandem
+WorkingDirectory=/srv/tandem
+Environment=NODE_ENV=production
+EnvironmentFile=/srv/tandem/.env.local
+ExecStart=/usr/bin/pnpm start
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

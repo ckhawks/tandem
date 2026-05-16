@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground;
+    /* Inter rendering tweaks — calt for contextual alts, ss01 for the
+       single-storey 'a' style most apps prefer, cv11 for tabular figures. */
+    font-feature-settings: "cv11", "ss01", "calt";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* TipTap editor */
+.ProseMirror { @apply outline-none min-h-[60vh]; }
+.ProseMirror :is(h1,h2,h3,h4,h5,h6) { @apply font-semibold; }
+
+/* Tighter paragraph rhythm than tailwind-typography defaults */
+.ProseMirror p { margin-top: 0.35em; margin-bottom: 0.35em; line-height: 1.55; }
+.ProseMirror p:first-child { margin-top: 0; }
+.ProseMirror h1 { margin-top: 1.1em; margin-bottom: 0.35em; }
+.ProseMirror h2 { margin-top: 1em;   margin-bottom: 0.3em; }
+.ProseMirror h3 { margin-top: 0.9em; margin-bottom: 0.25em; }
+.ProseMirror ul, .ProseMirror ol { margin-top: 0.35em; margin-bottom: 0.35em; }
+.ProseMirror li { margin-top: 0.1em; margin-bottom: 0.1em; }
+.ProseMirror li > p { margin: 0; }
+.ProseMirror blockquote { margin-top: 0.5em; margin-bottom: 0.5em; }
+.ProseMirror pre { margin-top: 0.5em; margin-bottom: 0.5em; }
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  height: 0;
+}
+
+/* Collaboration cursors — minimal, no borders, animated fade. */
+.collaboration-cursor__caret {
+  position: relative;
+  display: inline-block;
+  width: 2px;
+  margin-left: -1px;
+  margin-right: -1px;
+  vertical-align: text-bottom;
+  background-color: currentColor;
+  border: none;
+  pointer-events: none;
+  animation: tandem-caret-fade 1.2s ease-in-out infinite;
+}
+@keyframes tandem-caret-fade {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+.collaboration-cursor__label {
+  position: absolute;
+  top: -1.45em;
+  left: -1px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  user-select: none;
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.collaboration-cursor__caret:hover .collaboration-cursor__label,
+.collaboration-cursor__caret.is-active .collaboration-cursor__label {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Show labels briefly on any movement (TipTap doesn't toggle is-active itself;
+   we use a long-running fade so labels feel ambient rather than persistent). */
+.ProseMirror:hover .collaboration-cursor__label { opacity: 0.95; transform: translateY(0); }
