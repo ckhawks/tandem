@@ -6,6 +6,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
+import Link from "@tiptap/extension-link";
 import { Loader2 } from "lucide-react";
 import * as Y from "yjs";
 import { WebsocketProvider } from "@/lib/y-websocket-provider";
@@ -140,15 +141,37 @@ function EditorSurface({
   const editor = useEditor({
     immediatelyRender: false,
     editable: canEdit,
+    editorProps: {
+      handleKeyDown(view, event) {
+        if (!canEdit) return false;
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+          event.preventDefault();
+          const ed = editor;
+          if (!ed) return true;
+          const existing = ed.getAttributes("link").href as string | undefined;
+          const url = window.prompt("Link URL (empty to remove)", existing ?? "https://");
+          if (url === null) return true;
+          if (url === "") ed.chain().focus().unsetLink().run();
+          else ed.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+          return true;
+        }
+        return false;
+      },
+      attributes: { class: "prose prose-neutral dark:prose-invert max-w-none focus:outline-none" },
+    },
     extensions: [
       StarterKit.configure({ history: false }),
       Placeholder.configure({ placeholder: "Start writing…" }),
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({ provider, user: { name: user.name, color: user.color } }),
+      Link.configure({
+        openOnClick: !canEdit,        // viewers click to navigate; editors click to position cursor
+        autolink: true,                // turn pasted/typed URLs into links
+        linkOnPaste: true,
+        protocols: ["http", "https", "mailto"],
+        HTMLAttributes: { rel: "noopener noreferrer nofollow", target: "_blank" },
+      }),
     ],
-    editorProps: {
-      attributes: { class: "prose prose-neutral dark:prose-invert max-w-none focus:outline-none" },
-    },
   });
   return <EditorContent editor={editor} />;
 }

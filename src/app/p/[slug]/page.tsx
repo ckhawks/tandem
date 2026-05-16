@@ -1,8 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { marked } from "marked";
+import { Marked } from "marked";
 import { sql } from "@/lib/db";
 import { renderDocumentMarkdown } from "@/lib/doc-render";
+
+// Public-renderer marked instance: links open in a new tab with safe rel.
+const marked = new Marked({
+  renderer: {
+    link({ href, title, tokens }: { href: string; title?: string | null; tokens: unknown[] }) {
+      const text = (this as unknown as { parser: { parseInline: (t: unknown[]) => string } }).parser.parseInline(tokens);
+      const safeHref = /^(https?:|mailto:|\/)/i.test(href) ? href : "#";
+      const titleAttr = title ? ` title="${title.replace(/"/g, "&quot;")}"` : "";
+      return `<a href="${safeHref}"${titleAttr} target="_blank" rel="noopener noreferrer nofollow">${text}</a>`;
+    },
+  } as never,
+});
 
 export const dynamic = "force-dynamic";
 
