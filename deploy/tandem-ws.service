@@ -1,16 +1,18 @@
 [Unit]
 Description=Tandem — y-websocket server
-After=network.target postgresql.service
+After=network.target
 
 [Service]
 Type=simple
-User=tandem
-WorkingDirectory=/srv/tandem
+User=root
+WorkingDirectory=/root/tandem
 Environment=NODE_ENV=production
-EnvironmentFile=/srv/tandem/.env.local
+EnvironmentFile=/root/tandem/.env
 ExecStart=/usr/bin/node server/dist/server/ws.js
 Restart=on-failure
 RestartSec=3
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
