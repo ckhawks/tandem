@@ -8,7 +8,7 @@ User=root
 WorkingDirectory=/root/tandem
 Environment=NODE_ENV=production
 EnvironmentFile=/root/tandem/.env
-ExecStart=/usr/bin/node server/dist/server/ws.js
+ExecStart=/usr/local/bin/node server/dist/server/ws.js
 Restart=on-failure
 RestartSec=3
 StandardOutput=journal

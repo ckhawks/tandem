@@ -8,7 +8,7 @@ User=root
 WorkingDirectory=/root/tandem
 Environment=NODE_ENV=production
 EnvironmentFile=/root/tandem/.env
-ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -p 3742
+ExecStart=/usr/local/bin/node node_modules/next/dist/bin/next start -p 3742
 Restart=on-failure
 RestartSec=3
 # Forward console output to journald
