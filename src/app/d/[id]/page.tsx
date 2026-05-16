@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
@@ -9,6 +10,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const meta = await getDocMeta(id);
+  return { title: meta?.title ? `${meta.title} — Tandem` : "Tandem" };
+}
 
 export default async function DocPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

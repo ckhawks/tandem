@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Admin — Tandem" };
 
 export default async function AdminPage() {
   const session = await auth();

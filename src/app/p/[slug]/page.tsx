@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { marked } from "marked";
 import { sql } from "@/lib/db";
 import { renderDocumentMarkdown } from "@/lib/doc-render";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const [row] = await sql<{ title: string }[]>`
+    SELECT title FROM tandem.documents WHERE public_slug = ${slug} AND is_public = true LIMIT 1`;
+  return { title: row?.title ? `${row.title} — Tandem` : "Tandem" };
+}
 
 export default async function PublicDoc({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

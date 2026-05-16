@@ -78,6 +78,10 @@ export function Editor({ docId, initialTitle, canEdit, canRename, user }: Props)
     }, 500);
   }
 
+  useEffect(() => {
+    document.title = `${title || "Untitled"} — Tandem`;
+  }, [title]);
+
   return (
     <div className="flex flex-1 flex-col">
       <div className="mb-2 flex flex-wrap items-center gap-3">
